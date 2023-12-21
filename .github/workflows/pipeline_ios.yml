@@ -4,7 +4,7 @@ on:
     branches:
       - master
     # paths:
-    #   - packages/home_camper_host/**
+    #   - **
 
 jobs:
   drive:
@@ -12,16 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Bundle install
-        run: cd ./packages/home_camper_host/ios && bundle install
+        run: cd ./ios && bundle install
       - name: Setup JDK
         uses: actions/setup-java@v1
         with:
           java-version: "12.x"
-      # https://github.com/subosito/flutter-action/issues/16  maybe delete
-      - uses: actions/cache@v2
-        with:
-          path: /opt/hostedtoolcache/flutter
-          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
       - name: Setup flutter
         uses: subosito/flutter-action@v2
         with:
@@ -41,11 +36,11 @@ jobs:
           xcode-version: "latest-stable"
       - run: flutter doctor -v
       - name: Bundle install
-        run: cd ./packages/home_camper_host/ios && bundle install
+        run: cd ./ios && bundle install
       - name: Install tools
         run: |
           flutter pub get
-          cd ./packages/home_camper_host/ios && pod install
+          cd ./ios && pod install
       - name: Setup SSH Keys and known_hosts for fastlane match
         run: |
           SSH_PATH="$HOME/.ssh"
@@ -62,7 +57,7 @@ jobs:
           PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Deploy to TestFlight
         run: |
-          cd ./packages/home_camper_host/ios && bundle exec fastlane beta
+          cd ./ios && bundle exec fastlane beta
         env:
           TEAM_ID: ${{ secrets.TEAM_ID }}
           ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
@@ -78,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ios-build
-          path: ./packages/home_camper_host/ios/build/*.ipa
+          path: ./ios/build/*.ipa
 
     # runs-on: macos-latest
     # steps:
@@ -87,4 +82,4 @@ jobs:
     #     with:
     #       channel: "stable"
     #       cache: true
-    # - run: flutter build ios packages/home_camper_host/lib/main.dart
+    # - run: flutter build ios lib/main.dart
