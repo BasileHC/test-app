@@ -57,6 +57,13 @@ platform :ios do
       timeout: 3600,
       lock_when_sleeps: false
     )
+
+disable_automatic_code_signing(
+    team_id: "",
+    profile_name: "",
+    code_sign_identity: ''
+  )
+
     match(
       type: "appstore",
       keychain_name: ENV['MATCH_KEYCHAIN_NAME'],
